@@ -1,0 +1,133 @@
+@extends('layouts.userlayout.userApp')
+
+
+
+@section('css')
+<meta name="_token" content="{{ csrf_token() }}" /> 
+@endsection
+@section('content')
+<!-- Small Breadcrumb -->
+<div class="small-breadcrumb">
+   <div class="container">
+      <div class=" breadcrumb-link">
+         <ul>
+            <li><a href="{{ url('/home') }}">Home</a></li>
+            <li><a class="active" href="#">Dashboard</a></li>
+         </ul>
+      </div>
+   </div>
+</div>
+<!-- Small Breadcrumb -->
+@include('layouts.userlayout.leftsidebar')
+<div class="col-md-8 col-sm-12 col-xs-12">
+   <!-- Row -->
+   <div class="grid-card">
+      <div class="heading-panel">
+         <h3 class="main-title text-left">
+         Verify Mobile First    
+         </h3>
+      </div>
+      
+      
+      <div class="panel panel-body ">
+
+         
+         
+
+         @if ($errors->any())
+<div class="alert alert-solid alert-danger divhide5">
+<ul>
+@foreach ($errors->all() as $error)
+<li>{{ $error }}</li>
+@endforeach
+</ul>
+</div>
+@endif
+@if(Session::has('error'))
+<div class="alert alert-solid alert-danger divhide5">
+<button type="button" class="close" data-dismiss="alert">×</button>
+<strong>{!! session('error') !!}</strong>
+</div>
+@endif
+
+@if(Session::has('success'))
+<div class="alert alert-solid alert-success divhide5">
+<button type="button" class="close" data-dismiss="alert">×</button>
+<strong>{!! session('success') !!}</strong>
+</div>
+@endif
+
+ 
+ <div class="alert alert-success" style="display:none" id="feedback"></div>
+          
+            <div class="row">
+              
+
+                <form id="myForm" method="post">
+        
+               <div class="col-md-4 col-sm-12 col-xs-12">
+                 
+                     <input type="text" id="mobile" class="form-control margin-bottom-20" name="mobile" onKeyPress="if(this.value.length==10) return false;"  value="{{ Auth::user()->mobile }}" readonly="true">
+                  </div>
+                  <div class="col-md-2 col-sm-12 col-xs-12">
+                     <input class="btn btn-success" type="submit" name="submitBtn"  id="submitBtn" >
+                  </div>
+               </form>
+            </div>
+         </div>
+
+
+         <div id="verifyform">
+            <div class="row">
+                 <form id="selectForm2" class="form-horizontal"  method="post" >
+           
+                  
+                  <div class="col-md-4 col-sm-12 col-xs-12">
+                     <input type="number" class="form-control margin-bottom-20 " name="otp" placeholder="Enter 6 digit OTP" id="otp" style="display: none;" >
+                  </div>
+                  <div class="col-md-2 col-sm-12 col-xs-12">
+                     <input class="btn btn-success" type="submit" name="verifyBtn" value="verify" id="verifyBtn" style="display: none;" >
+                  </div>
+               </form>
+            </div>
+            </div> <!-- end row -->
+            
+            <!-- <div style="height: 300px;"> </div> -->
+            <!-- </div> end main 8 col -->
+         </div>
+         <!-- Row End -->
+      </div>
+      <!-- Middle Content Area  End -->
+   </div>
+   <!-- Row End -->
+</div>
+<!-- Main Container End -->
+</section>
+
+      <script>
+       $(document).ready(function(){
+
+ $( "#submitBtn" ).click(function( event ) {
+
+ 
+ var mobile=document.getElementById('mobile').value;
+ var dataString = {"mobile":mobile };
+
+ $.ajax({
+ type:"post",
+ url:"{{ url('/sendotp') }}",
+ data: dataString,
+   headers: {
+      'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+ success: function(html) {
+ $('#feedback').html(html);
+ }
+
+});
+ event.preventDefault();
+});
+});
+      </script>
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
+@endsection
